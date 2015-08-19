@@ -103,18 +103,9 @@ lfda <- function(x, y, r, metric = c("orthonormalized","plain","weighted"),knn =
     # calculate the distance, using a self-defined repmat function that's the same
     # as repmat() in Matlab
     distance2 <- repmat(Xc2, nc, 1) + repmat(t(Xc2), 1, nc) - 2 * t(Xc) %*% Xc
-    sorted <- apply(distance2, 2, sort) # sort for each column by distance
-    kNNdist2 <- t(as.matrix(sorted[knn + 1, ])) # knn-th nearest neighbor
-    sigma <- sqrt(kNNdist2)
 
-    localscale <- t(sigma) %*% sigma
-    # use only non-zero entries in localscale since this will be used in the denominator
-    # to calculate the affinity matrix
-    flag <- (localscale != 0)
-
-    # define affinity matrix - the larger the element in the matrix, the closer two data points are
-    A <- mat.or.vec(nc, nc)
-    A[flag] <- exp(-distance2[flag]/localscale[flag])
+    # Get affinity matrix
+    A <- getAffinityMatrix(distance2, knn, nc)
 
     Xc1 <- as.matrix(rowSums(Xc))
     G <- Xc %*% (repmat(as.matrix(colSums(A)), 1, d) * t(Xc)) - Xc %*% A %*% t(Xc)
@@ -132,29 +123,63 @@ lfda <- function(x, y, r, metric = c("orthonormalized","plain","weighted"),knn =
   if (r == d) {
     # without dimensionality reduction
     eigTmp <- eigen(solve(tSw) %*% tSb)  # eigenvectors here are normalized
-    eigVec <- eigTmp$vectors
-    eigVal <- as.matrix(eigTmp$values)
-
   } else {
     # dimensionality reduction (select only the r largest eigenvalues of the problem)
-    eigTmp <- rARPACK::eigs(A=solve(tSw) %*% tSb,k=r,which='LM') # r largest magnitude eigenvalues
-    eigVec <- eigTmp$vectors
-    eigVal <- as.matrix(eigTmp$values)
+    eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw) %*% tSb, k = r, which = 'LM')) # r largest magnitude eigenvalues
   }
-
-  T0 <- eigVec # the raw transforming matrix
+  eigVec <- eigTmp$vectors # the raw transforming matrix
+  eigVal <- as.matrix(eigTmp$values)
 
   # options to require a particular type of returned transform matrix
   # transforming matrix (do not change the "=" in the switch statement)
-  Tr <- switch(metric,
-    # this weighting scheme is explained in section 3.3 in the first reference
-    weighted = T0 * repmat(t(sqrt(eigVal)), d, 1),
-    orthonormalized = qr.Q(qr(T0)),
-    plain = T0
-  )
+  Tr <- getMetricOfType(metric, eigVec, eigVal, d)
 
   Z <- t(t(Tr) %*% x) # transformed data
   out <- list("T" = Tr, "Z" = Z)
   class(out) <- 'lfda'
   return(out)
+}
+#' LFDA Transformation/Prediction on New Data
+#'
+#' This function transforms a data set, usually a testing set, using the trained LFDA metric
+#' @param object The result from lfda function, which contains a transformed data and a transforming
+#'        matrix that can be used for transforming testing set
+#' @param newdata The data to be transformed
+#' @param type The output type, in this case it defaults to "raw" since the output is a matrix
+#' @param ... Additional arguments
+#' @export
+#' @method predict lfda
+#' @return the transformed matrix
+#' @author Yuan Tang
+predict.lfda <- function(object, newdata = NULL, type = "raw", ...){
+
+  if(is.null(newdata)){stop("You must provide data to be used for transformation. ")}
+  if(type != "raw"){stop('Types other than "raw" are currently unavailable. ')}
+  if(is.data.frame(newdata)) newdata <- as.matrix(newdata)
+
+  transformMatrix <- object$T
+
+  result <- newdata %*% transformMatrix
+  result
+}
+#' Print an lfda object
+#'
+#' Print an lfda object
+#' @param x The result from lfda function, which contains a transformed data and a transforming
+#' @param ... ignored
+#' @export
+#' @importFrom stats cov
+#' @importFrom utils head
+#' @method print lfda
+print.lfda <- function(x, ...){
+  cat("Results for Local Fisher Discriminant Analysis \n\n")
+  cat("The trained transforming matric is: \n")
+  print(head(x$T))
+
+  cat("\n\n The original data set after applying this metric transformation is:  \n")
+  print(head(x$Z))
+
+  cat("\n")
+  cat("Only partial output is shown above. Please see the model output for more details. \n")
+  invisible(x)
 }
