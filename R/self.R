@@ -62,7 +62,7 @@ self <- function(X, Y, beta = 0.5, r, metric = c("orthonormalized","plain","weig
 
   if (any(table(Y) < minObsPerLabel)) {
     stop(cat("Number of reviews per label is less than", minObsPerLabel, "\n",
-             "the label(s):", Y[which(table(Y) <= minObsPerLabel)], "is/are the problem(s)!"))
+             "the label(s):", unique(Y[which(table(Y) <= minObsPerLabel)]), "is/are the problem(s)!"))
   }
 
   X <- t(as.matrix(X))
@@ -111,8 +111,8 @@ self <- function(X, Y, beta = 0.5, r, metric = c("orthonormalized","plain","weig
   } else{
     eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(Srlw) %*% Srlb,k = r,which = 'LM'))
   }
-  eigVec <- eigTmp$vectors
-  eigVal <- as.matrix(eigTmp$values)
+  eigVec <- Re(eigTmp$vectors)
+  eigVal <- as.matrix(Re(eigTmp$values))
 
   Tr <- getMetricOfType(metric, eigVec, eigVal, d)
 

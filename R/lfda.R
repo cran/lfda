@@ -127,8 +127,8 @@ lfda <- function(x, y, r, metric = c("orthonormalized","plain","weighted"),knn =
     # dimensionality reduction (select only the r largest eigenvalues of the problem)
     eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw) %*% tSb, k = r, which = 'LM')) # r largest magnitude eigenvalues
   }
-  eigVec <- eigTmp$vectors # the raw transforming matrix
-  eigVal <- as.matrix(eigTmp$values)
+  eigVec <- Re(eigTmp$vectors) # the raw transforming matrix
+  eigVal <- as.matrix(Re(eigTmp$values))
 
   # options to require a particular type of returned transform matrix
   # transforming matrix (do not change the "=" in the switch statement)

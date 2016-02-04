@@ -115,8 +115,8 @@ klfda <- function (k, y, r, metric = c('weighted', 'orthonormalized', 'plain'),
 	# find generalized eigenvalues and normalized eigenvectors of the problem
 	eigTmp <- suppressWarnings(rARPACK::eigs(A = solve(tSw + reg * diag(1, nrow(tSw), ncol(tSw))) %*% tSb,
 	                                         k = r,which ='LM')) # r largest magnitude eigenvalues
-	eigVec <- eigTmp$vectors # the raw transforming matrix
-	eigVal <- as.matrix(eigTmp$values)
+	eigVec <- Re(eigTmp$vectors) # the raw transforming matrix
+	eigVal <- as.matrix(Re(eigTmp$values))
 
 	# options to require a particular type of returned transform matrix
 	# transforming matrix (do not change the "=" in the switch statement)
