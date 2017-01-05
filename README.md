@@ -1,6 +1,6 @@
 [![Travis-CI Build Status](https://travis-ci.org/terrytangyuan/lfda.svg?branch=master)](https://travis-ci.org/terrytangyuan/lfda)
 [![Coverage Status](https://coveralls.io/repos/terrytangyuan/lfda/badge.svg?branch=master)](https://coveralls.io/r/terrytangyuan/lfda?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/lfda)](http://cran.r-project.org/web/packages/lfda)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/lfda)](https://cran.r-project.org/package=lfda)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat)](http://badges.mit-license.org)
 
 # lfda
@@ -19,6 +19,10 @@ install.packages('lfda')
 ```{R}
 devtools::install_github('terrytangyuan/lfda')
 ```
+
+## Citation
+
+Please call `citation("lfda")` in R to properly cite this software. A white paper is available [here](https://arxiv.org/abs/1612.09219). 
 
 ## Examples
 ### Local Fisher Discriminant Analysis(LFDA)
