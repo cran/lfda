@@ -2,7 +2,7 @@
 % Please edit documentation in R/kmatrixGauss.R
 \name{kmatrixGauss}
 \alias{kmatrixGauss}
-\title{Gaussian Kernel Computation 
+\title{Gaussian Kernel Computation
 (Particularly used in Kernel Local Fisher Discriminant Analysis)}
 \usage{
 kmatrixGauss(x, sigma = 1)
@@ -18,17 +18,12 @@ K n x n kernel matrix.
           n is the number of samples.
 }
 \description{
-Gaussian kernel computation for klfda, which maps the original 
+Gaussian kernel computation for klfda, which maps the original
 data space to non-linear and higher dimensions.
 }
 \examples{
-\dontrun{
-k <- kmatrixGauss(x = train.data)
-}
 
-}
-\author{
-Yuan Tang
+kmatrixGauss(iris[, -5])
 }
 \references{
 Sugiyama, M (2007).
@@ -47,6 +42,9 @@ https://shapeofdata.wordpress.com/2013/07/23/gaussian-kernels/
 See \code{klfda} for the computation of
          kernel local fisher discriminant analysis
 }
+\author{
+Yuan Tang
+}
 \keyword{discriminant}
 \keyword{fisher}
 \keyword{kernel}
@@ -55,4 +53,3 @@ See \code{klfda} for the computation of
 \keyword{mahalanobis}
 \keyword{metric}
 \keyword{transformation}
-

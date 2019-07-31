@@ -22,7 +22,14 @@ the transformed matrix
 \description{
 This function transforms a data set, usually a testing set, using the trained LFDA metric
 }
+\examples{
+
+k <- iris[, -5]
+y <- iris[, 5]
+r <- 3
+model <- lfda(k, y, r = 4, metric = "plain")
+predict(model, iris[, -5])
+}
 \author{
 Yuan Tang
 }
-

@@ -5,7 +5,8 @@
 \title{Local Fisher Discriminant Analysis for
 Supervised Dimensionality Reduction}
 \usage{
-lfda(x, y, r, metric = c("orthonormalized", "plain", "weighted"), knn = 5)
+lfda(x, y, r, metric = c("orthonormalized", "plain", "weighted"),
+  knn = 5)
 }
 \arguments{
 \item{x}{n x d matrix of original samples.
@@ -40,39 +41,11 @@ version called kernel LFDA will be used instead. Three metric types can
 be used if needed.
 }
 \examples{
-\dontrun{
-## example without dimension reduction
-k <- trainData[,-1]
-y <- trainData[,1]
-r <- 26 # dimensionality of reduced space. Here no dimension reduction is performed
-result <- lfda(k,y,r,metric="plain")
-transformedMat <- result$Z # transformed training data
-metric.train <- as.data.frame(cbind(trainData[,1],transformedMat))
-colnames(metric.train)=colnames(trainData)
 
-## example with dimension reduction
-k <- trainData[,-1]
-y <- trainData[,1]
-r <- 3 # dimensionality of reduced space
-
-result <- lfda(k,y,r,metric="weighted")
-transformMat  <- result$T # transforming matrix - distance metric
-
-# transformed training data with Style
-transformedMat <- result$Z # transformed training data
-metric.train <- as.data.frame(cbind(trainData[,1],transformedMat))
-colnames(metric.train)[1] <- "Style"
-
-# transformed testing data with Style
-metric.test <- as.matrix(testData[,-1]) \%*\% transformMat
-metric.test <- as.data.frame(cbind(testData[,1],metric.test))
-colnames(metric.test)[1] <- "Style"
-}
-
-
-}
-\author{
-Yuan Tang
+k <- iris[, -5]
+y <- iris[, 5]
+r <- 3
+lfda(k, y, r, metric = "plain")
 }
 \references{
 Sugiyama, M (2007).
@@ -89,6 +62,9 @@ Conference on Machine Learning (ICML2006)}, 905--912.
 See \code{\link{klfda}} for the kernelized variant of
          LFDA (Kernel LFDA).
 }
+\author{
+Yuan Tang
+}
 \keyword{discriminant}
 \keyword{fisher}
 \keyword{lfda}
@@ -96,4 +72,3 @@ See \code{\link{klfda}} for the kernelized variant of
 \keyword{mahalanobis}
 \keyword{metric}
 \keyword{transformation}
-
